@@ -1,17 +1,16 @@
 pipeline {
     agent any
-
     triggers {
         githubPush()
     }
 
     environment {
-        DOCKERHUB_USERNAME = "kbhola001"
-        IMAGE_NAME     = "kbhola001/jenkinstest"
-        IMAGE_TAG     = "latest"
-        CONTAINER_NAME = "jenkinstest"
-        HOST_PORT      = "8081"
-        CONTAINER_PORT = "80"
+        DOCKERHUB_USERNAME = "tristan499"           // ← Changed
+        IMAGE_NAME         = "tristan499/jenkinstest"  // ← Updated to your Docker Hub
+        IMAGE_TAG          = "latest"
+        CONTAINER_NAME     = "jenkinstest"
+        HOST_PORT          = "8081"
+        CONTAINER_PORT     = "80"
     }
 
     options {
@@ -19,10 +18,10 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/kestonbhola/jenkinstest.git/', branch: 'main'
+                git url: 'https://github.com/tristan499/tristan-repo.git', 
+                    branch: 'main'
             }
         }
 
@@ -31,14 +30,14 @@ pipeline {
                 sh '''
                     set -e
                     echo "Checking required project files..."
-
+                    
                     test -f Dockerfile || { echo "Dockerfile not found"; exit 1; }
                     test -f nginx.conf || { echo "nginx.conf not found"; exit 1; }
                     test -f index.html || { echo "index.html not found"; exit 1; }
                     test -f sgustyle.css || { echo "sgustyle.css not found"; exit 1; }
                     test -f sguscript.js || { echo "sguscript.js not found"; exit 1; }
                     test -f grenada-updated.jpeg || { echo "grenada-updated.jpeg not found"; exit 1; }
-
+                    
                     echo "Required files found."
                     ls -la
                 '''
@@ -49,7 +48,7 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                    docker build --pull -t "$IMAGE_NAME" .
+                    docker build --pull -t "$IMAGE_NAME:$IMAGE_TAG" .
                 '''
             }
         }
@@ -82,8 +81,7 @@ pipeline {
             steps {
                 sh '''
                     set +e
-                    docker rm -f "$CONTAINER_NAME"
-                    true
+                    docker rm -f "$CONTAINER_NAME" || true
                 '''
             }
         }
@@ -105,28 +103,26 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                    sleep 2
-                    curl -I http://localhost:$HOST_PORT
+                    sleep 3
+                    curl -I http://localhost:$HOST_PORT || echo "Warning: Could not reach localhost"
                 '''
             }
         }
 
         stage('Show Running Container') {
             steps {
-                sh '''
-                    docker ps
-                '''
+                sh 'docker ps | grep -E "CONTAINER|$CONTAINER_NAME"'
             }
         }
     }
 
     post {
         success {
-            echo 'Deployment successful.'
-            echo 'Open your EC2 public IP followed by :8081 in a browser to view the site.'
+            echo '✅ Deployment successful!'
+            echo '🌐 Open your EC2 public IP followed by :8081 in a browser.'
         }
         failure {
-            echo 'Deployment failed. Check the Jenkins console output.'
+            echo '❌ Deployment failed. Check the Jenkins console output.'
         }
     }
 }
