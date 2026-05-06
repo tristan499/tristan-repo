@@ -5,8 +5,8 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_USERNAME = "tristan499"           // ← Changed
-        IMAGE_NAME         = "tristan499/jenkinstest"  // ← Updated to your Docker Hub
+        DOCKERHUB_USERNAME = "tristan556"              // ← Matches your login
+        IMAGE_NAME         = "tristan556/jenkinstest"  // ← Updated to match username
         IMAGE_TAG          = "latest"
         CONTAINER_NAME     = "jenkinstest"
         HOST_PORT          = "8081"
@@ -111,7 +111,7 @@ pipeline {
 
         stage('Show Running Container') {
             steps {
-                sh 'docker ps | grep -E "CONTAINER|$CONTAINER_NAME"'
+                sh 'docker ps | grep -E "CONTAINER|$CONTAINER_NAME" || echo "No running container found"'
             }
         }
     }
@@ -119,7 +119,7 @@ pipeline {
     post {
         success {
             echo '✅ Deployment successful!'
-            echo '🌐 Open your EC2 public IP followed by :8081 in a browser.'
+            echo '🌐 Open your server public IP:8081 in a browser to view the site.'
         }
         failure {
             echo '❌ Deployment failed. Check the Jenkins console output.'
