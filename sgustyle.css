@@ -1,0 +1,40 @@
+body {
+	font-family: Arial, sans-serif;
+	text-align: center;
+	background-color: #f4f4f4;
+	padding: 20px;
+}
+h1 {
+	color: #008000;
+}
+.accordion {
+	background-color: white;
+	cursor: pointer;
+	padding: 15px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	font-size: 18px;
+	transition: 0.4s;
+	border-bottom: 1px solid #ccc;
+}
+.active, .accordion:hover {
+	background-color: #ddd;
+}
+.panel {
+	padding: 15px;
+	display: none;
+	background-color: white;
+	overflow: hidden;
+	text-align: left;
+}
+/*This is for the heading. Resembles national colours*/
+.national-text {
+	font-size: 2rem;
+	font-weight: bold;
+	background: linear-gradient(to right, red, yellow, green);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
